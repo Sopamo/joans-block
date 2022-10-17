@@ -3,6 +3,7 @@ import { DisplayObject } from "@pixi/display";
 import { Engine } from "matter-js";
 import { BaseEntity } from "./entities/BaseEntity";
 import { Physics } from "./Physics";
+import { Keyboard } from "./Keyboard";
 
 export class Manager {
     private constructor() { /*this class is purely static. No constructor to see here*/ }
@@ -14,10 +15,10 @@ export class Manager {
     // We no longer need to store width and height since now it is literally the size of the screen.
     // We just modify our getters
     public static get width(): number {
-        return Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        return Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 200;
     }
     public static get height(): number {
-        return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        return Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
     }
 
     // Use this function ONCE to start the entire machinery
@@ -27,11 +28,14 @@ export class Manager {
             view: document.getElementById("scene") as HTMLCanvasElement,
             resolution: window.devicePixelRatio || 1,
             autoDensity: true,
-            resizeTo: window,
+            resizeTo: document.getElementById("scene")!,
             backgroundColor: background,
         });
+        Manager.app.resize()
 
         Physics.initialize()
+
+        Keyboard.initialize()
 
         // Add the ticker
         Manager.app.ticker.add(Manager.update)
@@ -42,6 +46,10 @@ export class Manager {
         if (Manager.currentScene) {
             Manager.currentScene.resize(Manager.width, Manager.height);
         }
+    }
+
+    public static get scene() {
+        return this.currentScene
     }
 
     // Call this function when you want to go to a new scene
@@ -74,5 +82,6 @@ export interface IScene extends DisplayObject {
     update(framesPassed: number): void;
     resize(screenWidth: number, screenHeight: number): void;
     addEntity(entity: BaseEntity): void;
-    getEntities(): BaseEntity[];
+    removeEntity(entity: BaseEntity): void;
+    getEntities(): Set<BaseEntity>;
 }

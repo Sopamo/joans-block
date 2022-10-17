@@ -13,14 +13,19 @@ export class EnvBox extends BaseEntity {
         container.width = width
         container.height = height
 
-        let body = Bodies.rectangle(x, y, width, height, { isStatic: false, friction: 0, staticFriction: 0})
+        let body = Bodies.rectangle(x, y, width, height, {
+            collisionFilter: {
+                group: -1,
+            },
+            isStatic: false,
+        })
         const constraint = Constraint.create({
             bodyA: body,
             pointB: {
                 x: body.position.x,
                 y: body.position.y,
             },
-            stiffness: 0.1,
+            stiffness: .2,
         })
 
         Composite.add(Physics.engine.world, constraint)

@@ -9,7 +9,7 @@ export class GameScene extends BaseScene implements IScene {
     constructor() {
         super();
         this.level = new TestLevel(this)
-        const player = new Player(20, 20, 15, 15)
+        const player = new Player(100, 20, 15, 15)
         this.addEntity(player)
     }
     public update(framesPassed: number): void {
