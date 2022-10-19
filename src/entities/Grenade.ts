@@ -37,12 +37,10 @@ export class Grenade extends BaseEntity {
         Events.on(Physics.engine, 'collisionStart', this.collisionHandler)
     }
 
-    public destroy() {
+    public explode() {
         const blastRadius = 30
         const blastForce = .08
-        const blastArea = Bodies.circle(this.body.position.x, this.body.position.y, blastRadius, {
-            label: 'blastArea'
-        })
+        const blastArea = Bodies.circle(this.body.position.x, this.body.position.y, blastRadius)
         const collisions = Query.collides(blastArea, Physics.engine.world.bodies)
         collisions.forEach(collision => {
             const object = collision.bodyA === blastArea ? collision.bodyB : collision.bodyA
@@ -54,7 +52,7 @@ export class Grenade extends BaseEntity {
         if(this.collisionHandler) {
             Events.off(Physics.engine, 'collisionStart', this.collisionHandler)
         }
-        super.destroy()
+        this.destroy()
     }
 
     private handleCollision(event: any) {
@@ -77,7 +75,7 @@ export class Grenade extends BaseEntity {
     public update() {
         super.update()
         if(this.triggered) {
-            this.destroy()
+            this.explode()
         }
     }
 }

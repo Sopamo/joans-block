@@ -4,6 +4,7 @@ import { Sprite } from "pixi.js";
 import { Keyboard } from "../Keyboard";
 import { Manager } from "../Manager";
 import { BaseEntity } from "./BaseEntity";
+import { Dynamite } from "./Dynamite";
 import { Grenade } from "./Grenade";
 
 export class Player extends BaseEntity {
@@ -41,6 +42,10 @@ export class Player extends BaseEntity {
             this.throwGrenade()
         })
 
+        Keyboard.on('KeyD', () => {
+            this.dropDynamite()
+        })
+
         super(container, body)
     }
 
@@ -73,5 +78,9 @@ export class Player extends BaseEntity {
 
     private throwGrenade() {
         Manager.scene.addEntity(new Grenade(this.body.position.x, this.body.position.y - 15, Vector.create(0.02, -0.02), this))
+    }
+
+    private dropDynamite() {
+        Manager.scene.addEntity(new Dynamite(this.body.position.x, this.body.position.y - 15))
     }
 }

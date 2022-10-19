@@ -4,6 +4,7 @@ import { Engine } from "matter-js";
 import { BaseEntity } from "./entities/BaseEntity";
 import { Physics } from "./Physics";
 import { Keyboard } from "./Keyboard";
+import { Sync } from "./multiplayer/Sync";
 
 export class Manager {
     private constructor() { /*this class is purely static. No constructor to see here*/ }
@@ -11,6 +12,7 @@ export class Manager {
     // Safely store variables for our game
     private static app: Application;
     private static currentScene: IScene;
+    private static sendUpdate: number = 0
 
     // We no longer need to store width and height since now it is literally the size of the screen.
     // We just modify our getters
@@ -22,7 +24,8 @@ export class Manager {
     }
 
     // Use this function ONCE to start the entire machinery
-    public static initialize(background: number): void {
+    public static async initialize(background: number): Promise<void> {
+        this.sendUpdate = 0
         // Create our pixi app
         Manager.app = new Application({
             view: document.getElementById("scene") as HTMLCanvasElement,
@@ -33,9 +36,14 @@ export class Manager {
         });
         Manager.app.resize()
 
+        await Sync.initialize()
+
         Physics.initialize()
 
         Keyboard.initialize()
+
+        const match = await Sync.startMatch()
+        console.log(match)
 
         // Add the ticker
         Manager.app.ticker.add(Manager.update)
@@ -66,7 +74,7 @@ export class Manager {
     }
 
     // This update will be called by a pixi ticker and tell the scene that a tick happened
-    private static update(framesPassed: number): void {
+    private static async update(framesPassed: number): Promise<void> {
         Engine.update(Physics.engine)
         if (Manager.currentScene) {
             Manager.currentScene.update(framesPassed);
@@ -74,7 +82,13 @@ export class Manager {
                 entity.update()
             })
         }
-
+        Manager.sendUpdate++
+        
+        if(Manager.sendUpdate >= 50) {
+            Manager.sendUpdate = 0
+            console.log('send update')
+            await Sync.sendUpdate()
+        }
     }
 }
 
