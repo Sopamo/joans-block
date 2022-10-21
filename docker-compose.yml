@@ -13,7 +13,7 @@ services:
       - "5432"
     ports:
       - "5432:5432"
-      - "8080:8080"
+      - "8081:8080"
   nakama:
     container_name: nakama
     image: registry.heroiclabs.com/heroiclabs/nakama:3.13.1

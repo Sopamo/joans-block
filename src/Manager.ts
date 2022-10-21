@@ -36,14 +36,11 @@ export class Manager {
         });
         Manager.app.resize()
 
-        await Sync.initialize()
+        // await Sync.initialize()
 
         Physics.initialize()
 
         Keyboard.initialize()
-
-        const match = await Sync.startMatch()
-        console.log(match)
 
         // Add the ticker
         Manager.app.ticker.add(Manager.update)
@@ -82,13 +79,13 @@ export class Manager {
                 entity.update()
             })
         }
-        Manager.sendUpdate++
+        // Manager.sendUpdate++
         
-        if(Manager.sendUpdate >= 50) {
-            Manager.sendUpdate = 0
-            console.log('send update')
-            await Sync.sendUpdate()
-        }
+        // if(Manager.sendUpdate >= 50) {
+        //     Manager.sendUpdate = 0
+        //     console.log('send update')
+        //     await Sync.sendUpdate()
+        // }
     }
 }
 
