@@ -15,13 +15,13 @@ export class BaseEntity {
     }
 
     public update() {
-        // if(this.container.x !== this.body.position.x || this.container.y !== this.body.position.y) {
-        //     Sync.queueEvent({
-        //         id: this.body.id,
-        //         x: this.body.position.x,
-        //         y: this.body.position.y,
-        //     })
-        // } 
+        if(this.container.x !== this.body.position.x || this.container.y !== this.body.position.y) {
+            Sync.queueEvent({
+                id: this.body.id,
+                x: this.body.position.x,
+                y: this.body.position.y,
+            })
+        } 
         this.container.x = this.body.position.x
         this.container.y = this.body.position.y
     }

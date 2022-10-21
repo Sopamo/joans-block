@@ -13,6 +13,7 @@ export class Manager {
     private static app: Application;
     private static currentScene: IScene;
     private static sendUpdate: number = 0
+    private static lastDeltaMS: number = 0
 
     // We no longer need to store width and height since now it is literally the size of the screen.
     // We just modify our getters
@@ -36,7 +37,7 @@ export class Manager {
         });
         Manager.app.resize()
 
-        // await Sync.initialize()
+        await Sync.initialize()
 
         Physics.initialize()
 
@@ -72,20 +73,27 @@ export class Manager {
 
     // This update will be called by a pixi ticker and tell the scene that a tick happened
     private static async update(framesPassed: number): Promise<void> {
-        Engine.update(Physics.engine)
+        if(!this.lastDeltaMS) {
+            this.lastDeltaMS = Manager.app.ticker.deltaMS - 1000/60
+        }
+        Engine.update(Physics.engine, Manager.app.ticker.deltaMS, Manager.app.ticker.deltaMS / this.lastDeltaMS)
+        this.lastDeltaMS = Manager.app.ticker.deltaMS
+        if(Manager.app.ticker.FPS < 57) {
+            console.log(Manager.app.ticker.FPS)
+        }
         if (Manager.currentScene) {
             Manager.currentScene.update(framesPassed);
             Manager.currentScene.getEntities().forEach((entity: BaseEntity) => {
                 entity.update()
             })
         }
-        // Manager.sendUpdate++
+        Manager.sendUpdate++
         
-        // if(Manager.sendUpdate >= 50) {
-        //     Manager.sendUpdate = 0
-        //     console.log('send update')
-        //     await Sync.sendUpdate()
-        // }
+        if(Manager.sendUpdate >= 50) {
+            Manager.sendUpdate = 0
+            console.log('send update')
+            await Sync.sendUpdate()
+        }
     }
 }
 

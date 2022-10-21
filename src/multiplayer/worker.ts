@@ -18,7 +18,6 @@ async function startMatch() {
   return await socket.createMatch()
 }
 
-console.log(client)
 onmessage = function(e: MessageEvent) {
   const opCode = 1
   socket.sendMatchState(match.match_id, opCode, JSON.stringify(e.data))

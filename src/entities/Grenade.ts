@@ -19,7 +19,9 @@ export class Grenade extends BaseEntity {
         container.width = size
         container.height = size
 
-        let body = Bodies.circle(x, y, size)
+        let body = Bodies.circle(x, y, size, {
+            label: 'grenade'
+        })
 
         Body.applyForce(body, body.position, {
             x: force.x * body.mass,
@@ -57,9 +59,10 @@ export class Grenade extends BaseEntity {
 
     private handleCollision(event: any) {
         event.pairs.forEach((pair: any) => {
-            const grenadeIsInvolved = pair.bodyA === this.body || pair.bodyB === this.body
+            const grenadeIsInvolved = pair.bodyA.label === this.body || pair.bodyB === this.body
             const playerIsInvolced = pair.bodyA === this.player.body || pair.bodyB == this.player.body
-            if(grenadeIsInvolved && !playerIsInvolced) {
+            const twoGrenades = pair.bodyA.label === 'grenade' && pair.bodyB.label === 'grenade'
+            if(grenadeIsInvolved && !playerIsInvolced && !twoGrenades) {
                 if(this.triggered) {
                     return
                 }
