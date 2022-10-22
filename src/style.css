@@ -7,6 +7,7 @@ html, body {
 
 body {
   display: flex;
+  background-color: #111111;
   background-image: url('/bg.svg');
   justify-content: center;
   align-items: center;
@@ -19,4 +20,12 @@ body {
   box-shadow: 0px 9px 55px -3px rgba(0,0,0,0.9);
   border-radius: 6px;
   background: #222222;
+}
+
+#app {
+  position: absolute;
+  width: calc(100% - 200px) !important;
+  height: calc(100% - 200px) !important;
+  top: 100px;
+  left: 100px;
 }

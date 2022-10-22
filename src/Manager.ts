@@ -78,9 +78,6 @@ export class Manager {
         }
         Engine.update(Physics.engine, Manager.app.ticker.deltaMS, Manager.app.ticker.deltaMS / this.lastDeltaMS)
         this.lastDeltaMS = Manager.app.ticker.deltaMS
-        if(Manager.app.ticker.FPS < 57) {
-            console.log(Manager.app.ticker.FPS)
-        }
         if (Manager.currentScene) {
             Manager.currentScene.update(framesPassed);
             Manager.currentScene.getEntities().forEach((entity: BaseEntity) => {

@@ -3,6 +3,7 @@ import { assets } from "../assets";
 import { IScene, Manager } from "../Manager";
 import { BaseScene } from "./BaseScene";
 import { GameScene } from "./Game";
+import { MatchmakingScene } from "./Matchmaking";
 
 export class LoaderScene extends BaseScene implements IScene {
 
@@ -16,20 +17,20 @@ export class LoaderScene extends BaseScene implements IScene {
         const loaderBarWidth = Manager.width * 0.8;
 
         this.loaderBarFill = new Graphics();
-        this.loaderBarFill.beginFill(0x008800, 1)
+        this.loaderBarFill.beginFill(0xa1a8e0, 1)
         this.loaderBarFill.drawRect(0, 0, loaderBarWidth, 50);
         this.loaderBarFill.endFill();
         this.loaderBarFill.scale.x = 0;
 
         this.loaderBarBoder = new Graphics();
-        this.loaderBarBoder.lineStyle(10, 0x0, 1);
+        this.loaderBarBoder.lineStyle(3, 0x0, 1);
         this.loaderBarBoder.drawRect(0, 0, loaderBarWidth, 50);
 
         this.loaderBar = new Container();
         this.loaderBar.addChild(this.loaderBarFill);
         this.loaderBar.addChild(this.loaderBarBoder);
         this.loaderBar.position.x = (Manager.width - this.loaderBar.width) / 2;
-        this.loaderBar.position.y = (Manager.height - this.loaderBar.height) / 2;
+        this.loaderBar.position.y = (Manager.height - this.loaderBar.height) / 2 - 20;
         this.addChild(this.loaderBar);
 
         Loader.shared.add(assets);
@@ -47,7 +48,7 @@ export class LoaderScene extends BaseScene implements IScene {
 
     private gameLoaded(): void {
         // Change scene to the game scene!
-        Manager.changeScene(new GameScene());
+        Manager.changeScene(new MatchmakingScene());
     }
 
     public update(framesPassed: number): void {
