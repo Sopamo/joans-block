@@ -6,6 +6,7 @@ import { Sync } from "../multiplayer/Sync";
 export class BaseEntity {
     public container: Container
     public body: Body
+    public shouldSync: boolean = false
 
     constructor(container: Container, body: Body) {
         this.container = container
@@ -15,13 +16,18 @@ export class BaseEntity {
     }
 
     public update() {
-        if(this.container.x !== this.body.position.x || this.container.y !== this.body.position.y) {
-            Sync.queueEvent({
-                id: this.body.id,
-                x: this.body.position.x,
-                y: this.body.position.y,
-            })
-        } 
+        if(this.shouldSync) {
+            if(this.container.x !== this.body.position.x || this.container.y !== this.body.position.y) {
+                Sync.queueEvent({
+                    code: Sync.CODES.POSITIONUPDATE,
+                    id: this.body.id,
+                    x: this.body.position.x,
+                    y: this.body.position.y,
+                    vx: this.body.velocity.x,
+                    vy: this.body.velocity.y,
+                })
+            }
+        }
         this.container.x = this.body.position.x
         this.container.y = this.body.position.y
     }

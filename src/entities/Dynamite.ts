@@ -1,11 +1,12 @@
 import { Bodies, Body, Query } from "matter-js";
 import { Sprite } from "pixi.js";
+import { Sync } from "../multiplayer/Sync";
 import { Physics } from "../Physics";
 import { BaseEntity } from "./BaseEntity";
 
 export class Dynamite extends BaseEntity {
     private timer = 200
-
+    public shouldSync: boolean = true
 
     constructor(x: number, y: number) {
         let container = Sprite.from("grenade");
@@ -19,7 +20,12 @@ export class Dynamite extends BaseEntity {
         container.height = height
 
         let body = Bodies.rectangle(x, y, width, height)
-
+        Sync.queueEvent({
+            code: Sync.CODES.ADDENTITIY,
+            type: 'Dynamite',
+            x,
+            y,
+        })
         super(container, body)
     }
 

@@ -17,7 +17,7 @@ export class EnvBox extends BaseEntity {
             collisionFilter: {
                 group: -1,
             },
-            isStatic: false,
+            isStatic: true,
         })
         const constraint = Constraint.create({
             bodyA: body,
@@ -28,7 +28,7 @@ export class EnvBox extends BaseEntity {
             stiffness: .2,
         })
 
-        Composite.add(Physics.engine.world, constraint)
+        // Composite.add(Physics.engine.world, constraint)
 
         super(container, body)
     }

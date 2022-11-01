@@ -86,9 +86,8 @@ export class Manager {
         }
         Manager.sendUpdate++
         
-        if(Manager.sendUpdate >= 50) {
+        if(Manager.sendUpdate >= 1) {
             Manager.sendUpdate = 0
-            console.log('send update')
             await Sync.sendUpdate()
         }
     }

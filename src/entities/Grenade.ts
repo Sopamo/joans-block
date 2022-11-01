@@ -1,15 +1,16 @@
-import { Bodies, Body, Composite, Events, Query, Vector } from "matter-js";
+import { Bodies, Body, Events, Query, Vector } from "matter-js";
 import { Sprite } from "pixi.js";
+import { Sync } from "../multiplayer/Sync";
 import { Physics } from "../Physics";
 import { BaseEntity } from "./BaseEntity";
-import { Player } from "./Player";
 
 export class Grenade extends BaseEntity {
+    private timer = 10
     private triggered = false
-    private player: Player
     private collisionHandler?: (e: any) => void
+    public shouldSync: boolean = true
 
-    constructor(x: number, y: number, force: Vector, player: Player) {
+    constructor(x: number, y: number, force: Vector) {
         let container = Sprite.from("grenade");
         const size = 5
 
@@ -29,8 +30,14 @@ export class Grenade extends BaseEntity {
         })
 
         super(container, body)
+        Sync.queueEvent({
+            code: Sync.CODES.ADDENTITIY,
+            type: 'Grenade',
+            x,
+            y,
+            force,
+        })
 
-        this.player = player
         this.setupCollisionListener()
     }
 
@@ -58,17 +65,16 @@ export class Grenade extends BaseEntity {
     }
 
     private handleCollision(event: any) {
+        if(this.timer > 0) {
+            return
+        }
         event.pairs.forEach((pair: any) => {
             const grenadeIsInvolved = pair.bodyA.label === this.body || pair.bodyB === this.body
-            const playerIsInvolced = pair.bodyA === this.player.body || pair.bodyB == this.player.body
             const twoGrenades = pair.bodyA.label === 'grenade' && pair.bodyB.label === 'grenade'
-            if(grenadeIsInvolved && !playerIsInvolced && !twoGrenades) {
+            if(grenadeIsInvolved && !twoGrenades) {
                 if(this.triggered) {
                     return
                 }
-                console.log('trigger')
-                console.log(pair.bodyA)
-                console.log(pair.bodyB)
                 this.triggered = true
                 pair.bodyA.entity.destroy()
             }
@@ -77,6 +83,10 @@ export class Grenade extends BaseEntity {
 
     public update() {
         super.update()
+        this.timer--
+        if(this.timer < -300) {
+            this.triggered = true
+        }
         if(this.triggered) {
             this.explode()
         }

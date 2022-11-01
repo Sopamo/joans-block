@@ -11,6 +11,7 @@ export class Player extends BaseEntity {
     private movementForce = 0.0015
     private jumpForce = -0.035
     private jumpState: false|'up'|'down' = false
+    public shouldSync: boolean = true
 
     constructor(x: number, y: number, width: number, height: number) {
         let container = Sprite.from("player");
@@ -77,7 +78,7 @@ export class Player extends BaseEntity {
     }
 
     private throwGrenade() {
-        Manager.scene.addEntity(new Grenade(this.body.position.x, this.body.position.y - 15, Vector.create(0.02, -0.02), this))
+        Manager.scene.addEntity(new Grenade(this.body.position.x, this.body.position.y - 15, Vector.create(0.02, -0.02)))
     }
 
     private dropDynamite() {
